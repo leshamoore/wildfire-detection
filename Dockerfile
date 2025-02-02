@@ -1,11 +1,21 @@
+FROM node:18 AS frontend-builder
+
+WORKDIR /app/web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci
+
+COPY web ./
+RUN npm run build
+
 FROM python:3.9
 
-WORKDIR /code
+WORKDIR /app
 
-COPY requirements.txt /code/requirements.txt
+COPY --from=frontend-builder /app/web/dist /app/web/dist
+COPY requirements.txt /app/requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-COPY . /code/app
+COPY . /app
 
-CMD ["fastapi", "run", "app/cmd/service.py", "--port", "8000", "--proxy-headers"]
+#CMD ["fastapi", "run", "cmd/service.py", "--port", "8000", "--proxy-headers"]
