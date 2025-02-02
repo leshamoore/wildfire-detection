@@ -35,5 +35,8 @@ jobs:
       - name: Install curl
         run: sudo apt-get update && sudo apt-get install -y curl
 
-      - name: Trigger Deploy Webhook
+      - name: Trigger App Deploy Webhook
         run: curl -k -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}"
+
+      - name: Trigger Worker Deploy Webhook
+        run: curl -k -X POST "${{ secrets.DEPLOY_WORKER_WEBHOOK_URL }}"
